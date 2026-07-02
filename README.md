@@ -3,7 +3,7 @@ This repository contains a production-ready Streamlit dashboard designed for rea
 
 ## Technical Architecture
 The application implements a decoupled, three-stage pipeline that processes raw historian data into prioritized maintenance actions:
-
+```
 [ Raw Historian Data (CSV) ] 
             │
             ▼
@@ -24,6 +24,7 @@ The application implements a decoupled, three-stage pipeline that processes raw 
             │
             ▼
 [ Interactive UI Layout (Plotly + Streamlit Metrics) ]
+```
 
 ## Core Architecture Components
 ### Statistical Signal Processing Engine:
@@ -38,6 +39,7 @@ Diagnosis Agent: Evaluates the cross-sectional intersection of highly elevated Z
 Resolution Agent: Computes asset risk profiles, maps explicit operational response SLAs based on calculated peak structural severity, and populates field checklists.
 
 ## Core Processing Workflow
+```
        [ Input Data Stream ]
                  │
                  ▼
@@ -71,6 +73,7 @@ Resolution Agent: Computes asset risk profiles, maps explicit operational respon
         │
         ▼
 [ Multi-Agent Diagnosis & SLA ]
+```
 
 Windowing & Residual Extraction: The system scans each selected signal vector, establishing a central baseline using a centered rolling median window of 36 periods. The raw signal is subtracted from this baseline to yield a clean residual array.
 
@@ -87,13 +90,16 @@ Heuristic Fault Intersection: The system scans the average Z-scores within the a
 ## Monitored Fault Rules & Engineering Conditions
 The diagnostic agent evaluates five core telemetry streams (motor_current, vibration, temperature, pressure, and flow_rate) across four hardcoded fault signatures:
 
-## Fault Mode	Signature Criteria	Action Checklist Includes
-Bearing wear / lubrication loss	High vibration + rising temperature + elevated current	Vibration spectrum analysis, lubrication history check
-Pump cavitation / suction restriction	Pressure instability + reduced flow + elevated vibration	Strainer inspection, NPSH margin verification
-Cooling degradation / thermal overload	Temperature excursion + sustained high current	Fan and heat exchanger evaluation, current balancing
-Instrumentation drift / fault	Cross-signal disagreement without matching process loop response	Calibration validation, redundant tag verification
+```
+Fault Mode	                                    Signature Criteria	                                                Action Checklist Includes
+--------------------------------------          ----------------------------------------------------------------        -----------------------------------------------------
+Bearing wear / lubrication loss	            High vibration + rising temperature + elevated current	            Vibration spectrum analysis, lubrication history check
+Pump cavitation / suction restriction	Pressure instability + reduced flow + elevated vibration	            Strainer inspection, NPSH margin verification
+Cooling degradation / thermal overload	Temperature excursion + sustained high current	                        Fan and heat exchanger evaluation, current balancing
+Instrumentation drift / fault	            Cross-signal disagreement without matching process loop response	Calibration validation, redundant tag verification
+```
 
-🚀 Getting Started
+## Getting Started
 Prerequisites
 Ensure you have a python environment configured with the required dependencies:
 
