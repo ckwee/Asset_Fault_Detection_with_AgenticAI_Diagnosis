@@ -1,4 +1,4 @@
-# MeCoE Agentic AI Fault Detection Dashboard
+# Asset Health Agentic AI Fault Detection Dashboard
 
 This Streamlit app plots equipment time series at the top of the screen, lists fault times and maintenance schedules on the bottom left, and shows an agentic AI diagnosis and recommended resolution on the bottom right.
 
