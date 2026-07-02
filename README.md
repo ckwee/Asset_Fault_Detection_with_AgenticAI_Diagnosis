@@ -1,28 +1,116 @@
-# Asset Health Agentic AI Fault Detection Dashboard
+# MeCoE Agentic AI Fault Detection, Diagnosis and Resolution
+This repository contains a production-ready Streamlit dashboard designed for real-time asset reliability monitoring and automated root-cause analysis. The platform leverages robust time-series statistics and a multi-agent orchestration framework to detect process anomalies, diagnose physical fault states, and generate actionable work-order response schedules.
 
-This Streamlit app plots equipment time series at the top of the screen, lists fault times and maintenance schedules on the bottom left, and shows an agentic AI diagnosis and recommended resolution on the bottom right.
+## Technical Architecture
+The application implements a decoupled, three-stage pipeline that processes raw historian data into prioritized maintenance actions:
 
-## Run
+[ Raw Historian Data (CSV) ] 
+            │
+            ▼
+┌────────────────────────────────────────────────────────┐
+│ 1. Statistical Signal Processing Engine                │
+│    • Rolling Median Baseline (Window: 36, Min: 12)     │
+│    • Median Absolute Deviation (MAD) Calculation       │
+│    • Dynamic Robust Z-Score Vectorization              │
+└────────────────────────────────────────────────────────┘
+            │
+            ▼
+┌────────────────────────────────────────────────────────┐
+│ 2. Multi-Agent Orchestration Domain                    │
+│    • Monitoring Agent : Time-window grouping & trips   │
+│    • Diagnosis Agent  : Deterministic pattern matching │
+│    • Resolution Agent : SLAs, checklists & actions     │
+└────────────────────────────────────────────────────────┘
+            │
+            ▼
+[ Interactive UI Layout (Plotly + Streamlit Metrics) ]
 
-```powershell
+## Core Architecture Components
+### Statistical Signal Processing Engine:
+Instead of using standard standard deviation (which is heavily biased by the anomalies it tries to detect), this system implements a Robust Z-Score calculation derived from a rolling Median Absolute Deviation (MAD). This guarantees high resilience against extreme outliers and signal noise.
+
+### Multi-Agent Decoupled Domain:
+
+Monitoring Agent: Evaluates vector-wide excursions, tracks active trip counters, and groups continuous anomalous windows together using index proximity thresholds.
+
+Diagnosis Agent: Evaluates the cross-sectional intersection of highly elevated Z-scores against deterministic engineering failure modes (e.g., Cavitation, Bearing Wear).
+
+Resolution Agent: Computes asset risk profiles, maps explicit operational response SLAs based on calculated peak structural severity, and populates field checklists.
+
+## Core Processing Workflow
+       [ Input Data Stream ]
+                 │
+                 ▼
+     [ Compute Rolling Median ]
+                 │
+                 ▼
+       [ Calculate Residuals ]
+                 │
+                 ▼
+       [ Derive Rolling MAD ]
+                 │
+                 ▼
+    [ Apply Epsilon Floor (1e-6) ] ◄── Prevents Zero-Division on Flatlines
+                 │
+                 ▼
+   [ Generate Robust Z-Scores ]
+                 │
+                 ▼
+ ┌───────────────┴───────────────┐
+ │ Is Max(|Z_col|) >= Threshold? │
+ └───────────────┬───────────────┘
+                 │
+        ┌────────┴────────┐
+       YES                NO
+        │                 │
+        ▼                 ▼
+[ Flag Anomaly ]   [ Normal State ]
+        │
+        ▼
+[ Window Grouping (Gap <= 2) ]
+        │
+        ▼
+[ Multi-Agent Diagnosis & SLA ]
+
+Windowing & Residual Extraction: The system scans each selected signal vector, establishing a central baseline using a centered rolling median window of 36 periods. The raw signal is subtracted from this baseline to yield a clean residual array.
+
+Dynamic Scaling (MAD): The rolling median of absolute residuals is computed and scaled by the constant factor (1.4826) to align asymptotically with standard normal distributions.
+
+Flatline Protection: If a sensor flatlines or stops reporting data variation, the denominator (scaled_mad) automatically defaults to a minute epsilon floor (ϵ=1×10 
+−6
+ ). This guards against ZeroDivisionError tracking while preserving sensitivity to sudden data changes immediately following a dead-band zone.
+
+Temporal Clumping: Timestamps flagged as anomalous are assembled into discrete events. If two anomalous timestamps occur within 2 samples of each other, they are merged into a single continuous plant event window.
+
+Heuristic Fault Intersection: The system scans the average Z-scores within the active event window. Signals demonstrating an average score above 55% of the master trip threshold are marked as "Active Trigger Signals." These triggers are passed directly to the rule engine to determine the closest matching fault profile.
+
+## Monitored Fault Rules & Engineering Conditions
+The diagnostic agent evaluates five core telemetry streams (motor_current, vibration, temperature, pressure, and flow_rate) across four hardcoded fault signatures:
+
+## Fault Mode	Signature Criteria	Action Checklist Includes
+Bearing wear / lubrication loss	High vibration + rising temperature + elevated current	Vibration spectrum analysis, lubrication history check
+Pump cavitation / suction restriction	Pressure instability + reduced flow + elevated vibration	Strainer inspection, NPSH margin verification
+Cooling degradation / thermal overload	Temperature excursion + sustained high current	Fan and heat exchanger evaluation, current balancing
+Instrumentation drift / fault	Cross-signal disagreement without matching process loop response	Calibration validation, redundant tag verification
+
+🚀 Getting Started
+Prerequisites
+Ensure you have a python environment configured with the required dependencies:
+
+```
+pip install streamlit pandas numpy plotly pyarrow
+```
+
+Running the Platform
+To launch the multi-agent execution dashboard locally, execute:
+
+```
 streamlit run app.py
 ```
 
-## Data format
+## Using the App
+Load Data: The system spins up with pre-packaged synthetic demonstration data demonstrating concurrent bearing failure and cavitation sequences. You can upload any standard plant historian CSV with a timestamp column.
 
-Upload a CSV with a timestamp column plus numeric sensor columns. If no CSV is uploaded, the app uses a built-in demo historian trace with two injected anomaly scenarios.
+Tune Sensitivity: Use the sidebar slider to manipulate the robust trip threshold. Lowering this value captures subtle, early-stage signal degradation; increasing it ensures warnings are restricted to critical process excursions.
 
-Expected columns can include:
-
-- timestamp
-- motor_current
-- vibration
-- temperature
-- pressure
-- flow_rate
-
-The diagnosis layer is rule-based and explainable, so it can be tuned to the exact MeCoE asset classes, fault library, and work-order logic from the proposal.
-
-## Extension points
-
-The current version uses an explainable local agent workflow: monitoring, diagnosis, scheduling, and resolution. It can be extended with an LLM endpoint, CMMS work-order creation, or MeCoE-specific fault libraries once those interfaces are available.
+Execute Actions: Track automated work-order schedules on the bottom-left panel, and complete agent-generated physical checks on the bottom-right panel to clear active anomalies.
