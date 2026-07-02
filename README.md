@@ -91,14 +91,12 @@ Additional Processing Details
 ## Monitored Fault Rules & Engineering Conditions
 The diagnostic agent evaluates five core telemetry streams (motor_current, vibration, temperature, pressure, and flow_rate) across four hardcoded fault signatures:
 
-```
-Fault Mode	                                    Signature Criteria	                                                Action Checklist Includes
---------------------------------------          ----------------------------------------------------------------        -----------------------------------------------------
-Bearing wear / lubrication loss	            High vibration + rising temperature + elevated current	            Vibration spectrum analysis, lubrication history check
-Pump cavitation / suction restriction	Pressure instability + reduced flow + elevated vibration	            Strainer inspection, NPSH margin verification
-Cooling degradation / thermal overload	Temperature excursion + sustained high current	                        Fan and heat exchanger evaluation, current balancing
-Instrumentation drift / fault	            Cross-signal disagreement without matching process loop response	Calibration validation, redundant tag verification
-```
+| Fault Mode | Signature Criteria | Action Checklist Includes |
+| --- | --- | --- |
+| Bearing wear / lubrication loss | High vibration + rising temperature + elevated current | Vibration spectrum analysis, lubrication history check |
+| Pump cavitation / suction restriction | Pressure instability + reduced flow + elevated vibration | Strainer inspection, NPSH margin verification |
+| Cooling degradation / thermal overload | Temperature excursion + sustained high current | Fan and heat exchanger evaluation, current balancing |
+| Instrumentation drift / fault | Cross-signal disagreement without matching process loop response | Calibration validation, redundant tag verification |
 
 ## Getting Started
 Prerequisites
