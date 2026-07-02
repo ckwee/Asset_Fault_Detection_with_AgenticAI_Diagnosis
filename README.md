@@ -1,4 +1,4 @@
-# MeCoE Agentic AI Fault Detection, Diagnosis and Resolution
+# Asset Health Agentic AI Fault Detection, Diagnosis and Resolution
 This repository contains a production-ready Streamlit dashboard designed for real-time asset reliability monitoring and automated root-cause analysis. The platform leverages robust time-series statistics and a multi-agent orchestration framework to detect process anomalies, diagnose physical fault states, and generate actionable work-order response schedules.
 
 ## Technical Architecture
