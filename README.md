@@ -32,11 +32,11 @@ Instead of using standard standard deviation (which is heavily biased by the ano
 
 ### Multi-Agent Decoupled Domain:
 
-Monitoring Agent: Evaluates vector-wide excursions, tracks active trip counters, and groups continuous anomalous windows together using index proximity thresholds.
+**Monitoring Agent: Evaluates vector-wide excursions, tracks active trip counters, and groups continuous anomalous windows together using index proximity thresholds.
 
-Diagnosis Agent: Evaluates the cross-sectional intersection of highly elevated Z-scores against deterministic engineering failure modes (e.g., Cavitation, Bearing Wear).
+**Diagnosis Agent: Evaluates the cross-sectional intersection of highly elevated Z-scores against deterministic engineering failure modes (e.g., Cavitation, Bearing Wear).
 
-Resolution Agent: Computes asset risk profiles, maps explicit operational response SLAs based on calculated peak structural severity, and populates field checklists.
+**Resolution Agent: Computes asset risk profiles, maps explicit operational response SLAs based on calculated peak structural severity, and populates field checklists.
 
 ## Core Processing Workflow
 ```
@@ -75,17 +75,18 @@ Resolution Agent: Computes asset risk profiles, maps explicit operational respon
 [ Multi-Agent Diagnosis & SLA ]
 ```
 
-Windowing & Residual Extraction: The system scans each selected signal vector, establishing a central baseline using a centered rolling median window of 36 periods. The raw signal is subtracted from this baseline to yield a clean residual array.
+Additional Processing Details
 
-Dynamic Scaling (MAD): The rolling median of absolute residuals is computed and scaled by the constant factor (1.4826) to align asymptotically with standard normal distributions.
+**Windowing & Residual Extraction: The system scans each selected signal vector, establishing a central baseline using a centered rolling median window of 36 periods. The raw signal is subtracted from this baseline to yield a clean residual array.
 
-Flatline Protection: If a sensor flatlines or stops reporting data variation, the denominator (scaled_mad) automatically defaults to a minute epsilon floor (ϵ=1×10 
-−6
- ). This guards against ZeroDivisionError tracking while preserving sensitivity to sudden data changes immediately following a dead-band zone.
+**Dynamic Scaling (MAD): The rolling median of absolute residuals is computed and scaled by the constant factor (1.4826) to align asymptotically with standard normal distributions.
 
-Temporal Clumping: Timestamps flagged as anomalous are assembled into discrete events. If two anomalous timestamps occur within 2 samples of each other, they are merged into a single continuous plant event window.
+**Flatline Protection: If a sensor flatlines or stops reporting data variation, the denominator (scaled_mad) automatically defaults to a minute epsilon floor (ϵ=1×10 
+−6 ). This guards against ZeroDivisionError tracking while preserving sensitivity to sudden data changes immediately following a dead-band zone.
 
-Heuristic Fault Intersection: The system scans the average Z-scores within the active event window. Signals demonstrating an average score above 55% of the master trip threshold are marked as "Active Trigger Signals." These triggers are passed directly to the rule engine to determine the closest matching fault profile.
+**Temporal Clumping: Timestamps flagged as anomalous are assembled into discrete events. If two anomalous timestamps occur within 2 samples of each other, they are merged into a single continuous plant event window.
+
+**Heuristic Fault Intersection: The system scans the average Z-scores within the active event window. Signals demonstrating an average score above 55% of the master trip threshold are marked as "Active Trigger Signals." These triggers are passed directly to the rule engine to determine the closest matching fault profile.
 
 ## Monitored Fault Rules & Engineering Conditions
 The diagnostic agent evaluates five core telemetry streams (motor_current, vibration, temperature, pressure, and flow_rate) across four hardcoded fault signatures:
