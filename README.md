@@ -119,3 +119,12 @@ Load Data: The system spins up with pre-packaged synthetic demonstration data de
 Tune Sensitivity: Use the sidebar slider to manipulate the robust trip threshold. Lowering this value captures subtle, early-stage signal degradation; increasing it ensures warnings are restricted to critical process excursions.
 
 Execute Actions: Track automated work-order schedules on the bottom-left panel, and complete agent-generated physical checks on the bottom-right panel to clear active anomalies.
+
+MIT License
+Copyright (c) 2026 CK
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
